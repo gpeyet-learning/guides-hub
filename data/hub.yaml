@@ -1,0 +1,20 @@
+guides: []
+
+# Format attendu :
+#
+# guides:
+#   - slug: hugo
+#     title: "Créer un site statique avec Hugo"
+#     description: "Les fondamentaux de Hugo pour créer et déployer un site statique."
+#     tags:
+#       - hugo
+#       - web
+#     url: "/hugo"
+#
+#   - slug: docker
+#     title: "Comprendre Docker"
+#     description: "Les fondamentaux de la conteneurisation avec Docker."
+#     tags:
+#       - docker
+#       - devops
+#     url: "/docker"
