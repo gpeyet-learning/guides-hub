@@ -1,119 +1,132 @@
-{{/* Hub home page — overrides layouts/index.html from the theme */}}
-{{ define "main" }}
+{{/* Hub home page — overrides layouts/index.html from the theme */}} {{ define
+"main" }}
 <div class="hub-page">
-
   {{/* Search bar */}}
   <div class="hub-search mb-3">
     <div class="input-group">
       <span class="input-group-text bg-transparent border-end-0">
         <i class="bi bi-search text-muted"></i>
       </span>
-      <input type="text"
-             id="hub-search-input"
-             class="form-control border-start-0 ps-0"
-             placeholder="Rechercher un guide...">
+      <input
+        type="text"
+        id="hub-search-input"
+        class="form-control border-start-0 ps-0"
+        placeholder="Rechercher un guide..."
+      />
     </div>
   </div>
 
-  {{/* Tag filters (generated from data) */}}
-  {{ $tags := slice }}
-  {{ range .Site.Data.hub.guides }}
-    {{ range .tags }}
-      {{ $tags = $tags | append . }}
-    {{ end }}
-  {{ end }}
-  {{ if $tags }}
+  {{/* Tag filters (generated from data) */}} {{ $tags := slice }} {{ range
+  .Site.Data.hub.guides }} {{ range .tags }} {{ $tags = $tags | append . }} {{
+  end }} {{ end }} {{ if $tags }}
   <div class="hub-tags mb-4" id="hub-tag-filters">
-    <button class="btn btn-sm btn-outline-secondary me-1 mb-1 active" data-tag="">Tous</button>
+    <button
+      class="btn btn-sm btn-outline-secondary me-1 mb-1 active"
+      data-tag=""
+    >
+      Tous
+    </button>
     {{ range ($tags | uniq | sort) }}
-      <button class="btn btn-sm btn-outline-secondary me-1 mb-1" data-tag="{{ . }}">{{ . }}</button>
+    <button
+      class="btn btn-sm btn-outline-secondary me-1 mb-1"
+      data-tag="{{ . }}"
+    >
+      {{ . }}
+    </button>
     {{ end }}
   </div>
-  {{ end }}
-
-  {{/* Guide grid, sorted alphabetically */}}
-  {{ if .Site.Data.hub.guides }}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" id="hub-grid">
-      {{ range sort .Site.Data.hub.guides "title" }}
-      <div class="col hub-card-wrapper"
-           data-title="{{ lower .title }}"
-           data-description="{{ lower .description }}"
-           data-tags="{{ delimit .tags "," | lower }}">
-        <div class="card h-100 border-0 hub-card">
-          <div class="card-body">
-            <h2 class="card-title h5 mb-2">
-              <a href="{{ .url }}" class="stretched-link text-decoration-none hub-card-title">
-                {{ .title }}
-              </a>
-            </h2>
-            <p class="card-text hub-card-desc small mb-0">{{ .description }}</p>
-          </div>
-          {{ with .tags }}
-          <div class="card-footer bg-transparent border-0 pt-0">
-            {{ range . }}
-              <span class="badge rounded-pill text-bg-secondary me-1">{{ . }}</span>
-            {{ end }}
-          </div>
+  {{ end }} {{/* Guide grid, sorted alphabetically */}} {{ if
+  .Site.Data.hub.guides }}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" id="hub-grid">
+    {{ range sort .Site.Data.hub.guides "title" }} {{ $tags := delimit .tags ","
+    | lower }}
+    <div
+      class="col hub-card-wrapper"
+      data-title="{{ .title | lower }}"
+      data-description="{{ .description | lower }}"
+      data-tags="{{ $tags }}"
+    >
+      <div class="card h-100 border-0 hub-card">
+        <div class="card-body">
+          <h2 class="card-title h5 mb-2">
+            <a
+              href="{{ .url }}"
+              class="stretched-link text-decoration-none hub-card-title"
+            >
+              {{ .title }}
+            </a>
+          </h2>
+          <p class="card-text hub-card-desc small mb-0">{{ .description }}</p>
+        </div>
+        {{ with .tags }}
+        <div class="card-footer bg-transparent border-0 pt-0">
+          {{ range . }}
+          <span class="badge rounded-pill text-bg-secondary me-1">{{ . }}</span>
           {{ end }}
         </div>
+        {{ end }}
       </div>
-      {{ end }}
     </div>
+    {{ end }}
+  </div>
 
-    <div id="hub-no-results" class="hub-empty" style="display:none">
-      <i class="bi bi-search hub-empty-icon"></i>
-      <p class="mb-0">Aucun guide ne correspond à cette recherche.</p>
-    </div>
+  <div id="hub-no-results" class="hub-empty" style="display: none">
+    <i class="bi bi-search hub-empty-icon"></i>
+    <p class="mb-0">Aucun guide ne correspond à cette recherche.</p>
+  </div>
   {{ else }}
-    <div class="hub-empty">
-      <i class="bi bi-journal-text hub-empty-icon"></i>
-      <p class="mb-0">Aucun guide disponible pour le moment.</p>
-    </div>
+  <div class="hub-empty">
+    <i class="bi bi-journal-text hub-empty-icon"></i>
+    <p class="mb-0">Aucun guide disponible pour le moment.</p>
+  </div>
   {{ end }}
-
 </div>
-{{ end }}
-
-{{ define "scripts" }}
+{{ end }} {{ define "scripts" }}
 <script>
-(function () {
-  'use strict';
-  var searchInput = document.getElementById('hub-search-input');
-  var tagButtons  = document.querySelectorAll('#hub-tag-filters [data-tag]');
-  var cards       = document.querySelectorAll('.hub-card-wrapper');
-  var noResults   = document.getElementById('hub-no-results');
-  var activeTag   = '';
+  (function () {
+    "use strict";
+    var searchInput = document.getElementById("hub-search-input");
+    var tagButtons = document.querySelectorAll("#hub-tag-filters [data-tag]");
+    var cards = document.querySelectorAll(".hub-card-wrapper");
+    var noResults = document.getElementById("hub-no-results");
+    var activeTag = "";
 
-  function normalize(str) {
-    return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  }
+    function normalize(str) {
+      return (str || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
 
-  function filter() {
-    var query = normalize(searchInput ? searchInput.value.trim() : '');
-    var visible = 0;
-    cards.forEach(function (card) {
-      var matchSearch = !query ||
-        normalize(card.dataset.title).includes(query) ||
-        normalize(card.dataset.description).includes(query);
-      var cardTags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-      var matchTag = !activeTag || cardTags.includes(activeTag);
-      var show = matchSearch && matchTag;
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
+    function filter() {
+      var query = normalize(searchInput ? searchInput.value.trim() : "");
+      var visible = 0;
+      cards.forEach(function (card) {
+        var matchSearch =
+          !query ||
+          normalize(card.dataset.title).includes(query) ||
+          normalize(card.dataset.description).includes(query);
+        var cardTags = card.dataset.tags ? card.dataset.tags.split(",") : [];
+        var matchTag = !activeTag || cardTags.includes(activeTag);
+        var show = matchSearch && matchTag;
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      if (noResults) noResults.style.display = visible === 0 ? "" : "none";
+    }
+
+    if (searchInput) searchInput.addEventListener("input", filter);
+
+    tagButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tagButtons.forEach(function (b) {
+          b.classList.remove("active");
+        });
+        this.classList.add("active");
+        activeTag = this.dataset.tag;
+        filter();
+      });
     });
-    if (noResults) noResults.style.display = visible === 0 ? '' : 'none';
-  }
-
-  if (searchInput) searchInput.addEventListener('input', filter);
-
-  tagButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      tagButtons.forEach(function (b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      activeTag = this.dataset.tag;
-      filter();
-    });
-  });
-})();
+  })();
 </script>
 {{ end }}
