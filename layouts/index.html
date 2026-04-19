@@ -1,5 +1,5 @@
-{{/* Hub home page — overrides layouts/index.html from the theme */}} {{ define
-"main" }}
+{{/* Hub home page — overrides layouts/index.html from the theme */}}
+{{ define "main" }}
 <div class="hub-page">
   {{/* Search bar */}}
   <div class="hub-search mb-3">
@@ -7,30 +7,25 @@
       <span class="input-group-text bg-transparent border-end-0">
         <i class="bi bi-search text-muted"></i>
       </span>
-      <input
-        type="text"
-        id="hub-search-input"
-        class="form-control border-start-0 ps-0"
-        placeholder="Rechercher un guide..."
-      />
+      <input type="text" id="hub-search-input" class="form-control border-start-0 ps-0"
+        placeholder="Rechercher un guide..." />
     </div>
   </div>
 
-  {{/* Tag filters (generated from data) */}} {{ $tags := slice }} {{ range
-  .Site.Data.hub.guides }} {{ range .tags }} {{ $tags = $tags | append . }} {{
-  end }} {{ end }} {{ if $tags }}
+  {{/* Tag filters (generated from data) */}}
+  {{ $tags := slice }}
+  {{ range .Site.Data.hub.guides }}
+  {{ range .tags }}
+  {{ $tags = $tags | append . }}
+  {{ end }}
+  {{ end }}
+  {{ if $tags }}
   <div class="hub-tags mb-4" id="hub-tag-filters">
-    <button
-      class="btn btn-sm btn-outline-secondary me-1 mb-1 active"
-      data-tag=""
-    >
+    <button class="btn btn-sm btn-outline-secondary me-1 mb-1 active" data-tag="">
       Tous
     </button>
     {{ range ($tags | uniq | sort) }}
-    <button
-      class="btn btn-sm btn-outline-secondary me-1 mb-1"
-      data-tag="{{ . }}"
-    >
+    <button class="btn btn-sm btn-outline-secondary me-1 mb-1" data-tag="{{ . }}">
       {{ . }}
     </button>
     {{ end }}
@@ -40,19 +35,12 @@
   <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" id="hub-grid">
     {{ range sort .Site.Data.hub.guides "title" }} {{ $tags := delimit .tags ","
     | lower }}
-    <div
-      class="col hub-card-wrapper"
-      data-title="{{ .title | lower }}"
-      data-description="{{ .description | lower }}"
-      data-tags="{{ $tags }}"
-    >
+    <div class="col hub-card-wrapper" data-title="{{ .title | lower }}" data-description="{{ .description | lower }}"
+      data-tags="{{ $tags }}">
       <div class="card h-100 border-0 hub-card">
         <div class="card-body">
           <h2 class="card-title h5 mb-2">
-            <a
-              href="{{ .url }}"
-              class="stretched-link text-decoration-none hub-card-title"
-            >
+            <a href="{{ .url }}" class="stretched-link text-decoration-none hub-card-title">
               {{ .title }}
             </a>
           </h2>
