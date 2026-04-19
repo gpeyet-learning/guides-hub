@@ -26,10 +26,15 @@ jobs:
       issues: write
       pull-requests: write
       statuses: write
-      security-events: write
     with:
       hugo-version: "0.160.0"
       dart-sass-version: "1.99.0"
       go-version: "1.26.1"
       node-version: "24.14.1"
     secrets: inherit
+
+  codeql:
+    uses: gpeyet-learning/.github/.github/workflows/guide-codeql.yml@main
+    permissions:
+      contents: read
+      security-events: write
