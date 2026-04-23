@@ -1,8 +1,5 @@
-:80 {
-	root * /srv
-	file_server
-	encode gzip
-	handle_errors {
-		respond "{http.error.status_code} {http.error.status_text}"
-	}
+:8080 {
+  root * /var/www/
+  file_server
+  encode gzip
 }
